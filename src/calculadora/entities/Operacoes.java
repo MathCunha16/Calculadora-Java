@@ -96,9 +96,11 @@ public class Operacoes {
         if (expressao.matches(".*[-+*/]\\s*$")) {
             throw new IllegalArgumentException("Expressão termina com operador!");
         }
+        
+        String exprSemEspacos = expressao.replaceAll("\\s+", ""); // adição nessaria 
 
-        // valida operadores consecutivos invalidos
-        if (expressao.matches(".*([+*/]{2,}|--|\\+\\s*-|\\-\\s*\\+).*")) {
+        // valida operadores unários corretamente (ex: 5+-3 é válido, mas 5+*3 não)
+        if (exprSemEspacos.matches(".*([+*/]{2,}|-[+*/]|\\+[+*/]|\\*[+*/]|/[+*/]).*")) {
             throw new IllegalArgumentException("Operadores consecutivos inválidos!");
         }
 

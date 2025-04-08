@@ -1,0 +1,1 @@
+SELECT * FROM `calculadora-java`.historico_operacoes 

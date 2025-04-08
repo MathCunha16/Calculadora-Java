@@ -1,240 +1,377 @@
-![Java](https://img.shields.io/badge/Java-17%2B-blue)  
-![License](https://img.shields.io/badge/License-MIT-green)  
+# 🧮 Calculadora Avançada com Histórico e Banco de Dados 🚀
+
+![Java](https://img.shields.io/badge/Java-17%2B-blue)
+![MySQL](https://img.shields.io/badge/DB-MySQL-00758f)
+![License](https://img.shields.io/badge/License-MIT-green)
 ![POO](https://img.shields.io/badge/Design-Orientado%20a%20Objetos-brightgreen)
 
-# Calculadora Avançada 🚀
+---
 
-Este repositório contém um projeto Java que implementa uma **calculadora avançada**. Ela é capaz de avaliar expressões aritméticas complexas com suporte a:
-- **Operações Básicas**: Adição, subtração, multiplicação e divisão.
-- **Parênteses**: Para expressões aninhadas.
-- **Multiplicação Implícita**: Ex.: `2(3)` é interpretado como `2 * (3)`.
-
-O código é estruturado de forma **modular** utilizando pacotes e interfaces, facilitando a manutenção, escalabilidade e clareza do projeto. ✨
-
-## 📚 Índice
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Detalhamento dos Componentes](#detalhamento-dos-componentes)
-  - [1️⃣ Pacote `calculadora`](#1️⃣-pacote-calculadora)
-    - [CalculadoraMain.java](#calculadoramainjava)
-  - [2️⃣ Pacote `calculadora.entities`](#2️⃣-pacote-calculadoraentities)
-    - [Operacoes.java](#operacoesjava)
-  - [3️⃣ Pacote `calculadora.entities.interfaces`](#3️⃣-pacote-calculadoraentitiesinterfaces)
-    - [OperacaoInterface.java e Implementações](#operacaointerfacejava-e-implementações)
-- [Fluxo de Execução e Lógica do Código](#fluxo-de-execução-e-lógica-do-código)
-- [Conclusão](#conclusão)
-- [Roadmap](#roadmap)
-- [Contato e Licença](#contato-e-licença)
+## 📜 Índice Rápido  
+| [Novos Recursos v3.0](#novos-recursos-v30) | [Estrutura do Projeto](#estrutura-do-projeto) |  
+| [Configuração Inicial](#configuração-inicial) | [Fluxo de Operações](#fluxo-de-operações) |  
+| [Componentes Principais](#componentes-principais) | [Roadmap](#roadmap) |  
+| [Licença](#licença) | [Detalhamento Técnico Profundo](#detalhamento-técnico-profundo) |  
 
 ---
 
-## 📂 Estrutura do Projeto <a name="estrutura-do-projeto"></a>
-O projeto está dividido em **3 pacotes principais**:
+<a name="novos-recursos-v30"></a>
+## 🌟 Novos Recursos v3.0
 
-1. **`calculadora`**  
-   Contém a classe principal que gerencia a interação com o usuário e a execução do programa.
-
-2. **`calculadora.entities`**  
-   Abriga a classe que contém a lógica central de processamento e avaliação de expressões aritméticas.
-
-3. **`calculadora.entities.interfaces`**  
-   Define a interface para as operações aritméticas e fornece as implementações específicas para cada operação (soma, subtração, multiplicação e divisão).
+- 🗃️ **Histórico Persistente** em Banco MySQL  
+- 🔄 **CRUD Completo** (Create, Read, Update, Delete)  
+- ✅❌ Sistema de **Status de Operações** (Bem/Mal sucedida)  
+- 💻 **Interface de Linha de Comando** Aprimorada  
+- 🔍 **Validação de Dados** Aprimorada  
+- 🚨 **Tratamento de Erros** Granular  
 
 ---
 
-## 🛠️ Detalhamento dos Componentes <a name="detalhamento-dos-componentes"></a>
+<a name="estrutura-do-projeto"></a>
+## 📂 Estrutura do Projeto
 
-### 1️⃣ Pacote `calculadora` <a name="1️⃣-pacote-calculadora"></a>
+```bash
+src/
+├── calculadora/
+│   ├── entities/
+│   │   ├── HistoricoOperacao.java  # 🗃️ Entidade de histórico
+│   │   ├── Operacoes.java          # 🧠 Lógica principal
+│   │   └── interfaces/             # 📜 Contratos das operações
+│   └── CalculadoraMain.java        # 💻 CLI principal
+├── db/
+│   ├── DB.java                     # 🔌 Conexão com banco
+│   ├── HistoricoDAO.java           # 📊 Operações CRUD
+│   └── DbException.java            # ❌ Erros de banco
+sql/
+├── CriacaoDaTabelaDeHistorico.sql  # 🛠️ DDL da tabela
+└── ConsultandoHistoricoGeral.sql   # 🔍 Consulta exemplo
+```
 
-#### CalculadoraMain.java <a name="calculadoramainjava"></a>
+---
 
-- **Objetivo:**  
-  Serve como **ponto de entrada** do programa, gerenciando a interação com o usuário via console. 💻
+<a name="configuração-inicial"></a>
+## ⚙️ Configuração Inicial
 
-- **Principais Funcionalidades:**
-  - **Importações:**  
-    - `Operacoes` do pacote `calculadora.entities` para realizar os cálculos.
-    - `Scanner` do pacote `java.util` para leitura de entrada.
+1. **Banco de Dados MySQL**  
+   ```sql
+   CREATE DATABASE `calculadora-java`;
+   USE `calculadora-java`;
+   -- Executar script CriacaoDaTabelaDeHistorico.sql
+   ```
+
+2. **Arquivo de Configuração** (`db.properties`)  
+   ```properties
+   user=seu_usuario
+   password=sua_senha
+   dburl=jdbc:mysql://127.0.0.1:3306/calculadora-java
+   useSSL=false
+   ```
+
+3. **Dependências**  
+   - ⬇️ Baixe o driver JDBC do MySQL:  
+     [🔗 Connector/J 8.0.33+](https://dev.mysql.com/downloads/connector/j/)  
+   - ➕ Adicione o JAR ao classpath do projeto.
+
+> **⚠️ Importante**  
+> 1. Renomeie `db.config.example.properties` para `db.properties`  
+> 2. 🔑 Preencha com suas credenciais do MySQL  
+> 3. 🛠️ Execute os scripts SQL:  
+>    ```bash
+>    mysql -u seu_usuario -p calculadora-java < sql/CriacaoDaTabelaDeHistorico.sql
+>    ```
+
+---
+
+<a name="fluxo-de-operações"></a>
+## 🔄 Fluxo de Operações
+
+```mermaid
+graph TD
+    A[🏁 Início] --> B{⌨️ Digitar comando}
+    B --> |📝 Expressão| C[✅ Validar e Processar]
+    C --> D[💾 Persistir no Banco]
+    B --> |📜 HISTORICO| E[👀 Exibir últimas 10]
+    B --> |✏️ EDITAR| F[🔄 Atualizar operação]
+    B --> |🗑️ DELETAR| G[❌ Remover do histórico]
+    B --> |🚪 SAIR| H[🔴 Encerrar]
+```
+
+---
+
+<a name="componentes-principais"></a>
+## 💻 Comandos Disponíveis
+
+```bash
+# 🧮 Calculadora
+> 2*(3+4)/5  
+✅ Resultado: 2,80
+
+# 📜 Histórico
+> HISTORICO
+┌──────┬─────────────────────┬──────────────────────────────┬───────────────┬──────────────┐
+│  ID  │      Data/Hora      │         Operação             │   Resultado   │    Status    │
+├──────┼─────────────────────┼──────────────────────────────┼───────────────┼──────────────┤
+│ 103  │ 25/05/2024 14:30:15 │ 2*(3+4)/5                    │ 2.8           │ Bem sucedida │
+└──────┴─────────────────────┴──────────────────────────────┴───────────────┴──────────────┘
+
+# ✏️ Edição
+> EDITAR
+Digite o ID: 103
+Nova expressão: (2*(3+4))/5
+✅ Atualizado!
+
+# 🗑️ Exclusão
+> DELETAR
+Digite o ID: 103
+✅ Operação removida!
+```
+
+---
+
+<a name="roadmap"></a>
+## 📈 Roadmap
+
+| Status | Recurso               | Versão |
+|--------|-----------------------|-------:|
+| ✅     | Histórico Persistente |  v3.0  |
+| ✅     | CRUD Completo         |  v3.0  |
+| 🚧     | Interface Visual      |  v4.0  |
+| ⏳     | Autenticação          |  v4.1  |
+
+---
+
+<a name="licença"></a>
+## 📄 Licença
+
+MIT License - [🔍 Detalhes](LICENSE)
+
+---
+
+<a name="detalhamento-técnico-profundo"></a>
+# 🔧 Detalhamento Técnico Profundo
+
+## 🧠 Núcleo de Processamento Matemático
+
+### Classe `Operacoes.java`
+#### Algoritmo de Avaliação de Expressões
+1. **Pré-processamento:**
+   ```java
+   public double calcularExpressao(String expressao) {
+       // 1. Sanitização
+       String expr = expressao.replace(" ", "")
+                             .replace(",", ".")
+                             .replaceAll("(?<=\\d)(?=\\()", "*");
+       
+       // 2. Resolução hierárquica
+       expr = processarParenteses(expr);
+       expr = processarOperadores(expr, "[*/]");
+       expr = processarOperadores(expr, "[+-]");
+       
+       return Double.parseDouble(expr);
+   }
+   ```
+
+2. **Mecanismo de Parênteses:**
+   ```java
+   private String processarParenteses(String expr) {
+       while (expr.contains("(")) {
+           int inicio = expr.lastIndexOf("(");  // Inside-out strategy
+           int fim = expr.indexOf(")", inicio);
+           String subExpr = expr.substring(inicio + 1, fim);
+           double resultado = calcularExpressao(subExpr);  // Recursão
+           expr = expr.substring(0, inicio) + resultado + expr.substring(fim + 1);
+       }
+       return expr;
+   }
+   ```
+
+3. **Engine de Operações:**
+   ```java
+   private String processarOperadores(String expr, String operadores) {
+       Matcher m = Pattern.compile("(-?\\d+\\.?\\d*)([" + operadores + "])(-?\\d+\\.?\\d*)").matcher(expr);
+       while (m.find()) {
+           double num1 = Double.parseDouble(m.group(1));
+           double num2 = Double.parseDouble(m.group(3));
+           String op = m.group(2);
+           double resultado = realizarOperacao(op, num1, num2);
+           expr = expr.replace(m.group(), String.valueOf(resultado));
+           m = pattern.matcher(expr);
+       }
+       return expr;
+   }
+   ```
+
+4. **Validação Avançada:**
+   ```java
+   private void validarExpressao(String expressao) {
+       // Regex para detectar padrões inválidos
+       String regexInvalidos = ".*([+*/]{2,}|-[+*/]|\\+[+*/]|\\*[+*/]|/[+*/]).*";
+       
+       if (expressao.matches(regexInvalidos)) {
+           throw new IllegalArgumentException("Operadores consecutivos inválidos!");
+       }
+       
+       // Verificação de números com múltiplos pontos
+       if (expressao.matches(".*\\b\\d+([.,]\\d+){2,}\\b.*")) {
+           throw new IllegalArgumentException("Formato numérico inválido!");
+       }
+   }
+   ```
+
+## 🗃️ Sistema de Persistência
+
+### Classe `HistoricoDAO.java`
+#### Padrão DAO (Data Access Object)
+1. **Inserção Otimizada:**
+   ```java
+   public void inserir(HistoricoOperacao op) {
+       String sql = "INSERT INTO historico_operacoes (operacao, resultado, data_hora, status_operacao) VALUES (?, ?, ?, ?)";
+       
+       try (Connection conn = DB.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+           
+           stmt.setString(1, op.getOperacao());
+           stmt.setString(2, op.getResultado());
+           stmt.setTimestamp(3, Timestamp.valueOf(op.getDataHora()));
+           stmt.setString(4, op.getStatusOperacao());
+           
+           stmt.executeUpdate();
+           
+           try (ResultSet rs = stmt.getGeneratedKeys()) {
+               if (rs.next()) {
+                   op.setId(rs.getInt(1));  // Recuperação do ID gerado
+               }
+           }
+       }
+   }
+   ```
+
+2. **Atualização Segura:**
+   ```java
+   public void atualizarOperacao(int id, String novaExpr, Operacoes calc) {
+       HistoricoOperacao existente = buscarPorId(id);
+       HistoricoOperacao atualizada = processarAtualizacao(novaExpr, calc);
+       
+       String sql = "UPDATE historico_operacoes SET operacao=?, resultado=?, data_hora=?, status_operacao=? WHERE id=?";
+       
+       try (Connection conn = DB.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+           
+           stmt.setString(1, atualizada.getOperacao());
+           stmt.setString(2, atualizada.getResultado());
+           stmt.setTimestamp(3, Timestamp.valueOf(atualizada.getDataHora()));
+           stmt.setString(4, atualizada.getStatusOperacao());
+           stmt.setInt(5, id);
+           
+           stmt.executeUpdate();
+       }
+   }
+   ```
+
+3. **Consulta Paginada:**
+   ```java
+   public List<HistoricoOperacao> consultarUltimas10Operacoes() {
+       String sql = "SELECT * FROM historico_operacoes ORDER BY data_hora DESC LIMIT 10";
+       // Uso de try-with-resources para fechamento automático
+       try (Connection conn = DB.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+           
+           List<HistoricoOperacao> historico = new ArrayList<>();
+           while (rs.next()) {
+               historico.add(mapearResultado(rs));  // Método de mapeamento
+           }
+           return historico;
+       }
+   }
+   ```
+
+## 🔌 Gerenciamento de Conexões
+
+### Classe `DB.java`
+#### Pool de Conexões com HikariCP
+```java
+public class DB {
+    private static HikariDataSource dataSource;
     
-  - **Método `main`:**
-    - Inicializa um objeto `Scanner` para capturar as entradas do usuário.
-    - Instancia a classe `Operacoes`, que contém a lógica de avaliação das expressões.
-    - Exibe um **cabeçalho** com mensagem de boas-vindas e instruções, informando que o usuário pode digitar **"sair"** a qualquer momento para encerrar.
-    - Entra em um **loop contínuo** (`while (true)`) que:
-      - Solicita a expressão aritmética (ex.: "3 + 5 * 2").
-      - Converte a entrada para uppercase para padronizar a verificação do comando "SAIR".
-      - Verifica se a entrada é "SAIR"; se sim, exibe uma mensagem de encerramento e finaliza o loop.
-      - Tenta calcular a expressão usando o método `calcularExpressao` da classe `Operacoes`.  
-      - Se o cálculo for bem-sucedido, exibe o resultado formatado pelo método `resultado`.
-      - Em caso de erro, captura a exceção e exibe uma mensagem amigável com o método `getMensagemErro`.
-    - Fecha o `Scanner` ao final para liberar os recursos.
+    static {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(props.getProperty("dburl"));
+        config.setUsername(props.getProperty("user"));
+        config.setPassword(props.getProperty("password"));
+        config.setMaximumPoolSize(10);
+        config.setConnectionTimeout(30000);
+        dataSource = new HikariDataSource(config);
+    }
+    
+    public static Connection getConnection() throws SQLException {
+        return dataSource.getConnection();  // Conexão do pool
+    }
+}
+```
 
-  - **Método `getMensagemErro(Exception e)`:**
-    - **Objetivo:** Traduzir e formatar mensagens de erro para que fiquem mais compreensíveis pelo usuário.
-    - **Lógica:**
-      - Para `ArithmeticException` ou `IllegalArgumentException`, retorna a mensagem original.
-      - Se a exceção tiver uma causa do tipo `NumberFormatException`, extrai a parte inválida e retorna uma mensagem personalizada.
-      - Para outros tipos de exceção, retorna uma mensagem genérica informando que ocorreu um erro inesperado, com o nome da exceção.
+## ⚠️ Sistema de Tratamento de Erros
 
----
+### Hierarquia de Exceções
+```mermaid
+graph BT
+    A[RuntimeException] --> B[DbException]
+    A --> C[CalculadoraException]
+    C --> D[ExpressaoInvalidaException]
+    C --> E[DivisaoPorZeroException]
+```
 
-### 2️⃣ Pacote `calculadora.entities` <a name="2️⃣-pacote-calculadoraentities"></a>
+### Mecanismo de Tradução de Erros
+```java
+private static String getMensagemErro(Exception e) {
+    if (e instanceof ArithmeticException) {
+        return "Erro aritmético: " + e.getMessage();
+    } else if (e.getCause() instanceof NumberFormatException) {
+        String parteInvalida = e.getCause().getMessage().split("\"")[1];
+        return "Valor numérico inválido: '" + parteInvalida + "'";
+    }
+    return "Erro não catalogado: " + e.getClass().getSimpleName();
+}
+```
 
-#### Operacoes.java <a name="operacoesjava"></a>
+## 🔄 Padrões de Projeto Utilizados
 
-- **Objetivo:**  
-  Centralizar a lógica de processamento e avaliação de expressões aritméticas, garantindo a execução correta das operações com validações e tratamento de parênteses. 🔄
-
-- **Atributos:**
-  - `soma`, `subtracao`, `multiplicacao` e `divisao`:  
-    Objetos que implementam a interface `OperacaoInterface`, representando as operações aritméticas básicas. Cada um é instanciado com sua implementação respectiva (Soma, Subtracao, Multiplicacao, Divisao).
-
-- **Construtor:**
-  - Inicializa os atributos com as implementações correspondentes, permitindo execução modular de cada operação.
-
-- **Principais Métodos:**
-
-  - **`calcularExpressao(String expressao)`**
-    - **Função:**  
-      Avalia a expressão aritmética passada como string e retorna o resultado em um `double`.
-    - **Passos:**
-      1. **Validação Inicial:**  
-         Chama `validarExpressao` para garantir que a expressão esteja correta (não vazia, parênteses balanceados, caracteres válidos, etc.).
-      2. **Normalização:**  
-         Remove espaços e substitui vírgulas por pontos para padronizar os números.
-      3. **Multiplicação Implícita:**  
-         Chama `adicionarMultiplicacaoEntreNumeroEParenteses` para inserir o operador `*` onde necessário.
-      4. **Processamento de Parênteses:**  
-         Resolve expressões contidas entre parênteses de forma recursiva com o método `processarParenteses`.
-      5. **Processamento de Operações:**  
-         - Primeiro, processa multiplicações e divisões com regex.
-         - Em seguida, processa adições e subtrações.
-      6. **Conversão Final:**  
-         Converte a expressão reduzida a um único valor para `double` e retorna o resultado.
-
-  - **`processarParenteses(String expr)`**
-    - **Objetivo:**  
-      Resolver recursivamente todas as expressões dentro de parênteses.
-    - **Como Funciona:**  
-      Localiza o parêntese de abertura mais interno, identifica o fechamento, extrai a expressão interna, calcula seu resultado (chamada recursiva a `calcularExpressao`) e substitui a expressão original pelo resultado. Repete até não restarem parênteses.
-
-  - **`adicionarMultiplicacaoEntreNumeroEParenteses(String expr)`**
-    - **Objetivo:**  
-      Inserir o operador de multiplicação `*` onde a multiplicação é implícita.
-    - **Exemplos:**
-      - `2(3)` é transformado em `2*(3)`.
-      - `(2)(3)` ou `)(` são automaticamente corrigidos.
-
-  - **`validarExpressao(String expressao)`**
-    - **Objetivo:**  
-      Garantir que a expressão seja sintaticamente correta.
-    - **Validações:**
-      - Expressão não pode ser vazia.
-      - Parênteses devem estar balanceados.
-      - Somente caracteres permitidos: dígitos, operadores aritméticos, vírgulas, pontos, parênteses e espaços.
-      - Números não podem conter múltiplos pontos ou vírgulas.
-      - A expressão não pode terminar com um operador.
-      - Não podem existir operadores consecutivos inválidos.
-      - A expressão não deve iniciar com um operador inválido (exceto o sinal negativo).
-      - Números separados por espaços sem operador são proibidos.
-
-  - **`processarOperacao(String expr, String operadores)`**
-    - **Objetivo:**  
-      Identificar e processar uma operação aritmética individual na expressão.
-    - **Como Funciona:**  
-      Utiliza expressões regulares para localizar padrões do tipo `(-?\d+\.?\d*)([*/+-])(-?\d+\.?\d*)`. Uma vez identificado:
-      - Extrai operandos e o operador.
-      - Converte os operandos para `double`.
-      - Chama `realizarOperacao` para executar a operação.
-      - Substitui a parte da expressão pelo resultado obtido.
-
-  - **`realizarOperacao(String operador, double num1, double num2)`**
-    - **Objetivo:**  
-      Delegar a execução da operação para a implementação correta da interface `OperacaoInterface` conforme o operador.
-    - **Implementação:**  
-      Utiliza um `switch` para:
-      - `+`: invocar a operação de soma.
-      - `-`: invocar a operação de subtração.
-      - `*`: invocar a operação de multiplicação.
-      - `/`: invocar a operação de divisão (com verificação para evitar divisão por zero).
-
-  - **`resultado(double resultado)`**
-    - **Objetivo:**  
-      Formatar e exibir o resultado final de acordo com o padrão brasileiro (vírgula como separador decimal e duas casas decimais).
-    - **Implementação:**  
-      Utiliza `String.format` com a localidade `pt-BR` e exibe o resultado via `System.out.printf`.
+| Padrão          | Aplicação                     | Benefícios                                 |
+|-----------------|-------------------------------|--------------------------------------------|
+| **DAO**         | Classe HistoricoDAO           | Separação clara da lógica de persistência  |
+| **Strategy**    | OperacaoInterface             | Flexibilidade para novas operações         |
+| **Singleton**   | Classe DB                     | Controle centralizado de conexões          |
+| **Factory**     | Criação de Operacoes          | Encapsulamento da instanciação complexa    |
 
 ---
 
-### 3️⃣ Pacote `calculadora.entities.interfaces` <a name="3️⃣-pacote-calculadoraentitiesinterfaces"></a>
+## 🛠️ Guia de Extensibilidade
 
-#### OperacaoInterface.java e Implementações <a name="operacaointerfacejava-e-implementações"></a>
+### Adicionar Nova Operação
+1. Implementar `OperacaoInterface`:
+   ```java
+   public class Potencia implements OperacaoInterface {
+       @Override
+       public double calcular(double num1, double num2) {
+           return Math.pow(num1, num2);
+       }
+   }
+   ```
 
-- **OperacaoInterface.java**  
-  - **Objetivo:**  
-    Estabelecer um contrato para todas as operações aritméticas, garantindo que as classes implementem:
-    - `double calcular(double num1, double num2);`
+2. Modificar `realizarOperacao`:
+   ```java
+   case "^": return new Potencia().calcular(num1, num2);
+   ```
 
-- **Soma.java**  
-  - **Função:**  
-    Realiza a adição: retorna a soma de `num1` e `num2`. ➕
-
-- **Subtracao.java**  
-  - **Função:**  
-    Realiza a subtração: retorna o resultado de `num1 - num2`. ➖
-
-- **Multiplicacao.java**  
-  - **Função:**  
-    Realiza a multiplicação: retorna o produto de `num1` e `num2`. ✖️
-
-- **Divisao.java**  
-  - **Função:**  
-    Realiza a divisão: retorna o resultado de `num1 / num2`.  
-  - **Detalhe Importante:**  
-    Verifica se `num2` é zero. Se for, lança uma `ArithmeticException` com a mensagem de que não é possível dividir por zero. ➗❌
+3. Atualizar regex de validação:
+   ```java
+   if (!expressao.matches("^[\\d+\\-*/^.,()\\s]*$")) { ... }
+   ```
 
 ---
 
-## 🔄 Fluxo de Execução e Lógica do Código <a name="fluxo-de-execução-e-lógica-do-código"></a>
-1. **Inicialização:**  
-   Ao iniciar o programa, o método `main` é executado, criando o objeto `Scanner` e instanciando a classe `Operacoes` com a lógica central para o processamento das expressões.
-
-2. **Interação com o Usuário:**  
-   O programa exibe uma mensagem inicial e entra num loop infinito, onde solicita que o usuário digite uma expressão aritmética. A qualquer momento, o usuário pode digitar **"SAIR"** para encerrar o programa. 👋
-
-3. **Processamento da Expressão:**
-   - **Validação:** A expressão é validada para garantir que está corretamente formada.
-   - **Normalização:** Remoção de espaços e padronização dos separadores decimais.
-   - **Multiplicação Implícita:** Inserção do operador `*` quando necessário.
-   - **Resolução de Parênteses:** Processamento recursivo das expressões aninhadas.
-   - **Avaliação de Operações:** Respeitando a precedência (multiplicação/divisão antes de adição/subtração), utilizando regex para identificar e calcular cada operação.
-   - **Resultado:** A expressão final é convertida para `double` e exibida.
-
-4. **Exibição do Resultado:**  
-   O resultado final é formatado para o padrão brasileiro e exibido ao usuário. 🎯
-
-5. **Tratamento de Erros:**  
-   Se ocorrer algum erro (ex.: parênteses desbalanceados, operadores consecutivos inválidos, formatação numérica incorreta ou divisão por zero), uma exceção é lançada, capturada no método `main` e uma mensagem de erro amigável é exibida. ⚠️
-
----
-
-## 🔚 Conclusão <a name="conclusão"></a>
-Este projeto demonstra uma abordagem **robusta e modular** para construir uma calculadora avançada em Java. Com a separação de responsabilidades em pacotes e o uso de interfaces, o código é facilmente expansível e manutenível. A forte ênfase em validação e tratamento de exceções garante que o usuário receba feedback adequado, evitando falhas inesperadas durante a execução. 👍
-
-Este README detalhado serve como um guia completo para desenvolvedores interessados em entender, utilizar ou expandir as funcionalidades desta calculadora avançada.
-
----
-
-## Roadmap 🌟 <a name="roadmap"></a>
-| Prioridade | Recurso             | Status               |
-|------------|---------------------|----------------------|
-| 🔥 Alta    | Potência (^)        | Em desenvolvimento   |
-| 🟡 Média   | Funções (sqrt, log) | Planejado            |
-| 🟢 Baixa   | Interface Gráfica   | Backlog              |
-
----
-
-## Contato e Licença <a name="contato-e-licença"></a>
-📧 **Contato**:  
-✉️ matheuscunhaprado@gmail.com  
-
-📜 **Licença**: MIT License - Libre para uso e modificação
+Este nível detalhado de documentação técnica garante:
+- 🔄 **Manutenibilidade:** Estrutura modularizada  
+- 🔍 **Rastreabilidade:** Fluxos bem documentados  
+- 🛡️ **Segurança:** Tratamento rigoroso de erros  
+- 🚀 **Performance:** Uso eficiente de recursos do JDBC
