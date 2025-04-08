@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 #Ocultando informações sensíveis
 db.properties
+=======
+db.properties
+>>>>>>> 0ff1221 (Adicionando .gitignore para ignorar arquivos sensíveis do DB/IDE)
